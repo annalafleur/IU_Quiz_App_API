@@ -9,16 +9,13 @@ const auth = require('../../../common/authentication')
 const TMe = require('../../../types/TMe')
 
 async function getMyProfile(_, args, context, info) {
-
-    console.log(context.user)
-
     const fields = gqlFields(info)
-    // Prüft Authentifizierung
+    // Check authentication
     const authResult = await auth.authorizeUser(context.user)
     if (!authResult.success){
         throw new AuthenticationError(authResult.message)
     }
-    // Return Daten
+    // Return requested data
     return await TMe(context.user, fields)
 }
 

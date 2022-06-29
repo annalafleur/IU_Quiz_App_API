@@ -11,7 +11,7 @@ const TQuestion = require('../../../types/TQuestion')
 // Database
 const knex = require('../../../db/db')
 
-async function getAllQuestions(_, {filter}, context, info) {
+async function getRandomQuestionsForModule(_, {filter}, context, info) {
     const fields = gqlFields(info)
     // Check authentication
     const authResult = await auth.authorizeUser(context.user)
@@ -32,14 +32,12 @@ async function getAllQuestions(_, {filter}, context, info) {
     let whereObject = {
         module: targetModule.id,
     }
-    if (filter.own_questions_only){
-        whereObject.author = context.user.id
-    }
     // Get Questions
     const questions = await knex('questions')
     .select('*')
     .where(whereObject)
-    .orderBy('id', 'ASC')
+    .limit(filter.amount)
+    .orderByRaw('random()')
     // Gather questions array items
     let arrQuestions = []
     for (let question of questions){
@@ -50,4 +48,4 @@ async function getAllQuestions(_, {filter}, context, info) {
     return arrQuestions
 }
 
-module.exports = getAllQuestions
+module.exports = getRandomQuestionsForModule

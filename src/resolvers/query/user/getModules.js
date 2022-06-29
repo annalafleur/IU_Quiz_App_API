@@ -2,6 +2,7 @@
 const {AuthenticationError} = require('apollo-server-express')
 const gqlFields = require('graphql-fields')
 
+// Common
 const auth = require('../../../common/authentication')
 
 // Type resolvers
@@ -12,20 +13,22 @@ const knex = require('../../../db/db')
 
 async function getModules(_, args, context, info) {
     const fields = gqlFields(info)
-    // Prüft Authentifizierung
+    // Check authentication
     const authResult = await auth.authorizeUser(context.user)
     if (!authResult.success){
         throw new AuthenticationError(authResult.message)
     }
-    // Query alle Module aus der Datenbank
+    // Query all modules from database
     const modules = await knex('modules')
     .select('*')
+    .orderBy('id', 'ASC')
+    // Gather array of modules
     let arrModules = []
     for (let module of modules){
         const moduleInfo = await TModule(module, fields)
         arrModules.push(moduleInfo)
     }
-    // Return Daten
+    // Return requested data
     return arrModules
 }
 

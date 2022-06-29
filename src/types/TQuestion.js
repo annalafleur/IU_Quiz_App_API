@@ -1,7 +1,7 @@
 const knex = require('../db/db')
 
 async function TQuestion(question, fields){
-   
+    // Build return object
     const questionInfo = {
         uuid: await ( async () => {
             if ('uuid' in fields){
@@ -108,7 +108,7 @@ async function TQuestion(question, fields){
             }
         })()
     }
-    // Return Daten
+    // Return requested data
     return questionInfo
 }
 

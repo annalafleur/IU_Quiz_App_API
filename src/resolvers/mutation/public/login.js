@@ -3,12 +3,14 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const gqlFields = require('graphql-fields')
 
+// Common
 const res = require('../../../common/response')
 const auth = require('../../../common/authentication')
 
 // Type resolvers
 const TMe = require('../../../types/TMe')
 
+// Database
 const knex = require('../../../db/db')
 
 async function login(_, { email, password }, context, info) {
@@ -20,7 +22,7 @@ async function login(_, { email, password }, context, info) {
         email: userEmail
     })
     .first()
-    // Prüft, ob User mit bestimmter Email existiert
+    // Check if user with specified email exists
     if (!user) {
         return res.fail({
             message: 'No user with that email address',
@@ -29,21 +31,21 @@ async function login(_, { email, password }, context, info) {
             }
         })
     }
-    // Prüft, ob Passwort korrekt ist
+    // Check if password is correct
     const valid = await bcrypt.compare(password, user.password)
     if (!valid) {
         return res.fail({
             message: 'Invalid password'
         })
     }
-    // Prüft die Authentifizierung 
+    // Check authentication
     const authResult = await auth.authorizeUser(user)
     if (!authResult.success) {
         return res.fail({
             message: authResult.message
         })
     }
-    // Return Daten
+    // Return data 
     return res.success(
         {
             message: 'Login successful'

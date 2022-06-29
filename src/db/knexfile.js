@@ -1,7 +1,8 @@
-
+// Third party
 const path = require('path')
 require('dotenv').config({path: path.resolve(__dirname, '../../.env')})
 
+// Connection settings
 const connectionConfig = {
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
@@ -10,19 +11,21 @@ const connectionConfig = {
   database: process.env.DB_NAME
 }
 
-
+// Check if SSL should be enabled
 if (process.env.DB_SSL == 'true' || process.env.DB_SSL == 'TRUE' || process.env.DB_SSL == '1'){
-  connectionConfig.ssl = true
-} else {
-  connectionConfig.ssl = false
+  connectionConfig.ssl = {
+    rejectUnauthorized: false
+  }
 }
 
+// Check if logging should be enabled
 if (process.env.DB_LOGGING == 'true' || process.env.DB_LOGGING == 'TRUE' || process.env.DB_LOGGING == '1'){
   connectionConfig.debug = true
 } else {
   connectionConfig.debug = false
 }
 
+// Return config
 module.exports = {
   client: process.env.DB_CLIENT,
   connection: connectionConfig,

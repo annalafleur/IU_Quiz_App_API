@@ -1,7 +1,7 @@
 {
-  "name": "iubh_quiz_app_api",
+  "name": "iu_quiz_app_api",
   "version": "1.0.0",
-  "description": "Backend für IUBH Quiz App",
+  "description": "Backend for IU Quiz App",
   "main": "server.js",
   "engines": {
     "node": ">=17.3.1"

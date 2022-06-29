@@ -1,7 +1,7 @@
 const knex = require('../db/db')
 
 async function TUser(user, fields){
-  
+    // Build return object
     const userInfo = {
         uuid: await ( async () => {
             if ('uuid' in fields){
@@ -46,7 +46,7 @@ async function TUser(user, fields){
             }
         })()
     }
-    // Return Daten
+    // Return requested data
     return userInfo
 }
 

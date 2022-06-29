@@ -1,7 +1,7 @@
 const knex = require('../db/db')
 
 async function TModule(module, fields){
-   
+    // Build return object
     const moduleInfo = {
         uuid: await ( async () => {
             if ('uuid' in fields){
@@ -32,7 +32,7 @@ async function TModule(module, fields){
             }
         })(),
     }
-    // Return Daten
+    // Return requested data
     return moduleInfo
 }
 

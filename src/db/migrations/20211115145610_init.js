@@ -1,4 +1,4 @@
-// Initiale Migration
+// Initial Migration
 
 exports.up = function(knex) {
     return knex.schema
@@ -83,23 +83,31 @@ exports.up = function(knex) {
             table.integer('turn')
                 .notNullable()
                 .defaultTo(0)
-            table.enu('game_status', ['INVITE_PENDING', 'ACTIVE', 'DONE'], {
-                useNative: true,
-                enumName: 'game_status_type'
-            })
-                .notNullable()
             table.integer('module')
                 .references('id')
                 .inTable('modules')
                 .notNullable()
+            table.integer('winner')
+                .references('id')
+                .inTable('users')
+            table.integer('loser')
+                .references('id')
+                .inTable('users')
             table.integer('given_up_by')
                 .references('id')
                 .inTable('users')
+            table.boolean('is_game_over')
+                .defaultTo(0)
+                .notNullable()
             table.integer('user_sent_by')
                 .references('id')
                 .inTable('users')
                 .notNullable()
             table.integer('user_sent_to')
+                .references('id')
+                .inTable('users')
+                .notNullable()
+            table.integer('current_player')
                 .references('id')
                 .inTable('users')
                 .notNullable()
@@ -116,13 +124,11 @@ exports.up = function(knex) {
                 existingType: true,
                 enumName: 'answer_type'
             })
-                .notNullable()
             table.enu('user_b_answer', null, {
                 useNative: true,
                 existingType: true,
                 enumName: 'answer_type'
             })
-                .notNullable()
             table.integer('game')
                 .references('id')
                 .inTable('games')
@@ -131,6 +137,10 @@ exports.up = function(knex) {
                 .references('id')
                 .inTable('questions')
                 .notNullable()
+            table.boolean('is_played_by_user_a')
+                .defaultTo(0)
+            table.boolean('is_played_by_user_b')
+                .defaultTo(0)
             table.timestamps(true, true)
         })
         // Friendships
@@ -155,5 +165,9 @@ exports.down = function(knex) {
     return knex.schema
         .raw('DROP TYPE answer_type CASCADE')
         .raw('DROP TABLE users CASCADE')
+        .raw('DROP TABLE modules CASCADE')
         .raw('DROP TABLE questions CASCADE')
+        .raw('DROP TABLE games CASCADE')
+        .raw('DROP TABLE game_questions CASCADE')
+        .raw('DROP TABLE friendships CASCADE')
 }

@@ -2,23 +2,24 @@
 const gqlFields = require('graphql-fields')
 const { v4: uuidv4 } = require('uuid')
 
+// Common
 const res = require('../../../common/response')
 const auth = require('../../../common/authentication')
 
 // Type resolvers
 const TQuestion = require('../../../types/TQuestion')
 
-// Datenbank
+// Database
 const knex = require('../../../db/db')
 
 async function addQuestion(_, {addQuestionInput}, context, info) {
     const fields = gqlFields(info)
-    // Prüft Authentifizierung
+    // Check authentication
     const authResult = await auth.authorizeUser(context.user)
     if (!authResult.success){
         throw new AuthenticationError(authResult.message)
     }
-    // Prüft, ob gesuchtes Modul existiert
+    // Check if module exists
     const targetModule = await knex('modules')
     .select('*')
     .where({
@@ -33,7 +34,7 @@ async function addQuestion(_, {addQuestionInput}, context, info) {
             }
         })
     }
-    // Fügt Frage der Datenbank hinzu
+    // Add question to database
     const [newQuestion] = await knex('questions')
     .insert({
         uuid: uuidv4(),
@@ -48,7 +49,7 @@ async function addQuestion(_, {addQuestionInput}, context, info) {
         author: context.user.id
     })
     .returning('*')
-    // Return Information
+    // Return information
     return res.success(
         {
             message: 'Question has been added'
